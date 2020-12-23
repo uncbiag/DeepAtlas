@@ -5,6 +5,6 @@ This is the repository for the paper "DeepAtlas: Joint Semi-Supervised Learning 
 Install ```torch>=1.0``` and ```torchvision``` according to your config
 Install other dependencies with ```pip install -r requirements.txt```
 
-## Train a segmentation model with mindboggle data (21 or 65 training samples)
-
-```python train_seg.py --num-samples 21 --data-root $DATA_ROOT```
+## Train a segmentation model with mindboggle data
+E.g. Train a segmentation model with 21 training samples
+```python train_seg.py --num-samples 21 --data-root $DATA_ROOT --num-epochs 100 --lr 1e-3 --log-root ./logs```

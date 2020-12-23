@@ -25,6 +25,8 @@ def main():
                         help='only test model')
     parser.add_argument('--data-root', '-root', './data', type=str,
                         help='root of the data folder')
+    parser.add_argument('--log-root', '-log', './logs', type=str,
+                        help='root of the log folders that saves logs/checkpoints')
     args = parser.parse_args()
 
     n_classes = 32
@@ -79,7 +81,7 @@ def main():
                                          for file in train_lists)
     config['validation_list_file'] = os.path.join(args.data_root, "mindboggle/{}-valid.txt".format(test_set))
     config['testing_list_file'] = os.path.join(args.data_root, "mindboggle/{}".format(testing_list))
-    config['log_dir'] = './results/{}'.format(config['data'])
+    config['log_dir'] = './{}/{}'.format(args.log_root, config['data'])
 
     if not args.leaf:
         os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
