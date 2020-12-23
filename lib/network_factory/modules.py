@@ -73,14 +73,14 @@ class deconvBlock(nn.Module):
         self.deconv = nn.ConvTranspose3d(in_channels, out_channels, kernel_size, stride=stride,
                               padding=padding, output_padding=output_padding, bias=bias)
         self.bn = nn.BatchNorm3d(out_channels) if batchnorm else None
-        self.nonlinear = act
+        self.nonlinear = get_activation_function(act) if type(act) is str else act
         self.residual = residual
 
     def forward(self, input):
         x = self.deconv(input)
         if self.bn:
             x = self.bn(x)
-        x = self.nonlinear(x)
+        x = self.nonlinear()(x)
         if self.residual:
             x += input
         return x

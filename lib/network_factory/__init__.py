@@ -10,9 +10,9 @@ network_dic = {
     'voxel_morph_cvpr': voxel_morph.VoxelMorphCVPR2018,
     'UNet': unets.UNet,
     'UNet_light': unets.UNet_generator(encoders=[(8, 16), (16, 16, 32), (32, 32, 64), (64, 64, 64)],
-                                     decoders=[(64, 64, 64), (64, 32, 32), (32, 16, 16)],
-                                     act='LeakyReLU', maxpool=True, upsample=False, res=False
-                                     )
+                                       decoders=[(64, 64, 64), (64, 32, 32), (32, 16, 16)],
+                                       act='LeakyReLU', maxpool=True, upsample=False, res=False
+                                       )
 }
 
 

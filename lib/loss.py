@@ -3,9 +3,8 @@ import torch.nn as nn
 from torch.autograd import Variable
 from torch.autograd import Function
 import torch.nn.functional as F
-from itertools import repeat
 import numpy as np
-from utils.transforms import mask_to_one_hot
+from .transforms import mask_to_one_hot
 
 # Intersection = dot(A, B)
 # Union = dot(A, A) + dot(B, B)

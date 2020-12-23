@@ -6,56 +6,56 @@ available_activations = {'ReLU': nn.ReLU,
                          'LeakyReLU': nn.LeakyReLU}
 
 
-# def get_activation_function(act):
-#     """
-#     Get an activation function
-#     :param act:
-#     :return:
-#     """
-#     if act in available_activations:
-#         return  available_activations[act]
-#     else:
-#         NotImplementedError(
-#             "Not Implemented activation type {}, only {} are available now".format(act, available_activations.keys()))
-#
-#
-# # 3D UNet and its variants
-#
-# def convBlock(in_channels, out_channels, kernel_size=3, stride=1, padding=1,
-#               bias=True, batchnorm=False, act='ReLU'):
-#     act_F = get_activation_function(act)
-#
-#     if batchnorm:
-#         layer = nn.Sequential(OrderedDict({
-#             'conv': nn.Conv3d(in_channels, out_channels, kernel_size, stride=stride, padding=padding, bias=bias),
-#             'BN': nn.BatchNorm3d(out_channels),
-#             'nonlinear': act_F()
-#         }))
-#     else:
-#         layer = nn.Sequential(OrderedDict({
-#             'conv': nn.Conv3d(in_channels, out_channels, kernel_size, stride=stride, padding=padding, bias=bias),
-#             'nonlinear': act_F()
-#         }))
-#     return layer
-#
-#
-# def deconvBlock(in_channels, out_channels, kernel_size, stride=1, padding=0,
-#                 output_padding=0, bias=True, batchnorm=False, act='ReLU'):
-#     # activation layer
-#     act_F = get_activation_function(act)
-#
-#     if batchnorm:
-#         layer = nn.Sequential(OrderedDict({
-#             'deconv': nn.ConvTranspose3d(in_channels, out_channels, kernel_size, stride=stride,
-#                                padding=padding, output_padding=output_padding, bias=bias),
-#             'BN': nn.BatchNorm3d(out_channels),
-#             'nonlinear': act_F()}))
-#     else:
-#         layer = nn.Sequential(OrderedDict({
-#             'deconv': nn.ConvTranspose3d(in_channels, out_channels, kernel_size, stride=stride,
-#                                          padding=padding, output_padding=output_padding, bias=bias),
-#             'nonlinear': act_F()}))
-#     return layer
+def get_activation_function(act):
+    """
+    Get an activation function
+    :param act:
+    :return:
+    """
+    if act in available_activations:
+        return  available_activations[act]
+    else:
+        NotImplementedError(
+            "Not Implemented activation type {}, only {} are available now".format(act, available_activations.keys()))
+
+
+# 3D UNet and its variants
+
+def convBlock(in_channels, out_channels, kernel_size=3, stride=1, padding=1,
+              bias=True, batchnorm=False, act='ReLU'):
+    act_F = get_activation_function(act)
+
+    if batchnorm:
+        layer = nn.Sequential(OrderedDict({
+            'conv': nn.Conv3d(in_channels, out_channels, kernel_size, stride=stride, padding=padding, bias=bias),
+            'BN': nn.BatchNorm3d(out_channels),
+            'nonlinear': act_F()
+        }))
+    else:
+        layer = nn.Sequential(OrderedDict({
+            'conv': nn.Conv3d(in_channels, out_channels, kernel_size, stride=stride, padding=padding, bias=bias),
+            'nonlinear': act_F()
+        }))
+    return layer
+
+
+def deconvBlock(in_channels, out_channels, kernel_size, stride=1, padding=0,
+                output_padding=0, bias=True, batchnorm=False, act='ReLU'):
+    # activation layer
+    act_F = get_activation_function(act)
+
+    if batchnorm:
+        layer = nn.Sequential(OrderedDict({
+            'deconv': nn.ConvTranspose3d(in_channels, out_channels, kernel_size, stride=stride,
+                               padding=padding, output_padding=output_padding, bias=bias),
+            'BN': nn.BatchNorm3d(out_channels),
+            'nonlinear': act_F()}))
+    else:
+        layer = nn.Sequential(OrderedDict({
+            'deconv': nn.ConvTranspose3d(in_channels, out_channels, kernel_size, stride=stride,
+                                         padding=padding, output_padding=output_padding, bias=bias),
+            'nonlinear': act_F()}))
+    return layer
 
 
 def init_conv_weights(m):

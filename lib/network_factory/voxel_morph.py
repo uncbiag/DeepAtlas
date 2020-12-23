@@ -1,30 +1,30 @@
 #!/usr/bin/env python
 """
-registration network described in voxelmorph
+registration network described in voxelmorphm
 Created by zhenlinx on 11/8/18
 """
 
 import os
 import sys
 
-sys.path.append(os.path.realpath(".."))
+sys.path.append(os.path.realpath("../.."))
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from network_factory.modules import convBlock, deconvBlock
-from network_factory.utils import get_identity_transform_batch
+from lib.network_factory.modules import convBlock
+from lib.utils import get_identity_transform_batch
 
 class VoxelMorphCVPR2018(nn.Module):
     """
     unet architecture for voxelmorph models presented in the CVPR 2018 paper.
     You may need to modify this code (e.g., number of layers) to suit your project needs.
 
-    :param vol_size: volume size. e.g. (256, 256, 256)
-    :param enc_nf: list of encoder filters. right now it needs to be 1x4.
-           e.g. [16,32,32,32]
-    :param dec_nf: list of decoder filters. right now it must be 1x6 (like voxelmorph-1) or 1x7 (voxelmorph-2)
-    :return: the keras reg_model
+    :param input_channel: channels of input data (2 for a pair of images)
+    :param output_channel: channels of output data (3 for 3D registration)
+    :param enc_filters: list of encoder filters. values represent the number of filters of each layer
+           e.g. (16, 32, 32, 32, 32)
+    :param dec_filters: list of decoder filters.
     """
     def __init__(self, input_channel=2, output_channel=3, enc_filters=(16, 32, 32, 32, 32),
                  dec_filters=(32, 32, 32, 8, 8)):
