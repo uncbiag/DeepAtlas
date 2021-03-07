@@ -1,7 +1,4 @@
 #!/usr/bin/env python
-"""
-Created by zhenlinx on 12/20/2020
-"""
 from .base import *
 
 import os
@@ -27,9 +24,11 @@ class RegistrationExperiment(BaseExperiment):
 
         self.weakly_supervised = False  # if we are using segmentation for training
 
-        self.exp_name = 'Reg_{}{}{}{}{}{}{}{}'.format(
-            self.config['model'],
-            '_{}samples'.format(self.config["samples_per_epoch"]),
+        self.exp_name = 'Reg_{}{}{}{}{}{}{}{}{}'.format(
+            self.config['reg_model'],
+            '_t-{}'.format(
+                os.path.basename(self.config['training_list_file'][0]).split('.')[0]),
+            '_v-{}'.format(os.path.basename(self.config['validation_list_file']).split('.')[0]),
             '_batch_{}'.format(self.config['batch_size']),
             '_Simloss_' + '_'.join(
                 '{}_{}'.format(name, weight) for (name, settings, weight) in self.config['sim_loss']),
@@ -95,8 +94,8 @@ class RegistrationExperiment(BaseExperiment):
 
     def setup_model(self):
         # build segmentation model
-        model_type = get_network(self.config['model'])
-        self.model = model_type(**self.config['model_settings'])
+        model_type = get_network(self.config['reg_model'])
+        self.model = model_type(**self.config['reg_model_setting'])
         self.model.cuda()
 
     def setup_loss(self):
@@ -123,8 +122,7 @@ class RegistrationExperiment(BaseExperiment):
                                                             min_lr=1e-5)
         elif self.config['lr_mode'] == 'multiStep':
             self.config['milestones'] = [int(ratio * self.config['n_epochs']) for ratio in self.config['milestones']]
-            self.scheduler = lr_scheduler.MultiStepLR(self.optimizer, self.config['milestones'],
-                                                      gamma=self.config['gamma'])
+            self.scheduler = lr_scheduler.MultiStepLR(self.optimizer, self.config['milestones'], gamma=0.5)
         else:
             self.scheduler = None
 
@@ -136,7 +134,6 @@ class RegistrationExperiment(BaseExperiment):
         finished_epoch, self.best_score = self.initialize_model(self.model, self.optimizer, self.config['resume_dir'])
         self.current_epoch = finished_epoch + 1
 
-        print(self.config['samples_per_epoch'], self.config['batch_size'])
 
         print("Start Training:")
         for epoch in range(self.current_epoch, self.config['n_epochs'] + 1):
@@ -150,8 +147,9 @@ class RegistrationExperiment(BaseExperiment):
         running_losses = [['Total', 0.0]]
         running_losses += [[name, 0.0]
                            for name, _, _ in self.sim_criterions]
-        running_losses += [[name, 0.0]
-                           for name, _, _ in self.seg_criterions]
+        if self.weakly_supervised:
+            running_losses += [[name, 0.0]
+                               for name, _, _ in self.seg_criterions]
         running_losses += [[name, 0.0]
                            for name, _, _ in self.reg_criterions]
 
@@ -250,8 +248,9 @@ class RegistrationExperiment(BaseExperiment):
         running_losses = [['Total', 0.0]]
         running_losses += [[name, 0.0]
                            for name, _, _ in self.sim_criterions]
-        running_losses += [[name, 0.0]
-                           for name, _, _ in self.seg_criterions]
+        if self.weakly_supervised:
+            running_losses += [[name, 0.0]
+                               for name, _, _ in self.seg_criterions]
         running_losses += [[name, 0.0]
                            for name, _, _ in self.reg_criterions]
 
@@ -260,7 +259,7 @@ class RegistrationExperiment(BaseExperiment):
             dice_per_class = torch.zeros(self.config["n_classes"] - 1)  # no background class 0
             self.test_data_iter = iter(dataloader)
 
-            for j in range(min(self.config['samples_per_epoch'] // self.config['valid_batch_size'], len(
+            for j in range(min(self.config['valid_samples'] // self.config['valid_batch_size'], len(
                     dataloader))):
                 ((source_image, source_seg, source_name, source_seg_onehot),
                  (target_image, target_seg, target_name, target_seg_onehot)) = next(self.test_data_iter)
