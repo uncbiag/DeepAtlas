@@ -8,6 +8,12 @@ Install other dependencies with ```pip install -r requirements.txt```
 ## Data
 The [OAI](https://nda.nih.gov/oai/) knee MRIs and [MindBoggle101](https://mindboggle.info/data.html) brain MRIs were used in the paper. We can only share our processed brain MRIs due to copyright limitations. Please download the preprocessed Mindboggle101 from [Google Drive](https://drive.google.com/drive/folders/1UA7sDzIeOvA7niQ3AR6YYNV4UQrfgG_C?usp=sharing). Note that, in DeepAtlas paper, a few images were disregarded due the segmentation labeling errors that were fixed in the later versions of MB101.
 
-## Train a segmentation model with mindboggle data
+## Train a segmentation model with MindBoggle101 data
 E.g. Train a segmentation model with 21 training samples
 ```python train_seg.py --num-samples 21 --data-root $DATA_ROOT --num-epochs 100 --lr 1e-3 --log-root ./logs```
+
+## Train a registration model with MindBoggle101 data
+TODO
+
+## Train DeepAtlas model with MindBoggle101 data
+TODO
